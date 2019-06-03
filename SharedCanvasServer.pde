@@ -19,6 +19,19 @@ Client c;
 String input;
 int data[];
 
+/* Support Functions */
+
+/* Right Mouse Drop Client */
+void mousePressed(){
+   if (mouseButton == RIGHT) {
+    //s.write("You will be disconnected now.rn");
+    println(s.ip() + " to been disconnected");
+//    s.disconnect(c);
+    s.disconnect(c);
+   }  
+} //MousePressed
+
+
 void setup() 
 {
   size(450, 255);
@@ -38,7 +51,7 @@ void draw()
     s.write(pmouseX + " " + pmouseY + " " + mouseX + " " + mouseY + "\n");
   }
   // Receive data from client
-  c = s.available();
+  c = s.available();    //Get available client.
   if (c != null) {
     input = c.readString();
     input = input.substring(0, input.indexOf("\n")); // Only up to the newline
