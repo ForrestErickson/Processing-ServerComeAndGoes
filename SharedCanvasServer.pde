@@ -11,6 +11,8 @@
  * Canvas (Client) program so see how they interact.
  */
 
+/* Modified by F. Lee Erickson to test out more server features. */
+/* 3 June 2019. */
 
 import processing.net.*;
 
@@ -20,14 +22,58 @@ String input;
 int data[];
 
 /* Support Functions */
+/* E for Exit to close*/
+void keyPressed() {
+  if ((key== 'a'|| (key== 'A'))){
+     //Socket Active Test
+     println("Testing for active server.");
+     if (s.active()== true) {
+       println("Server active.");  
+       } else {
+       println("Server not active.");
+         }
+   }
+ if ((key =='s') || (key== 'S')){
+     //stop Socket
+     println("Stoping socket.");
+     s.stop();
+     println("Stopped socket on keyPressed.");
+     //exit();
+  }
+  
+  if ((key== 'e'|| (key== 'E'))){
+     //Close Socket
+     println("Disconnecting socket.");
+     s.disconnect(c);
+     println("Exiting socket on keyPressed.");
+     exit();
+  } 
+  
+}
+
+ 
+   
+/*This function is called when a client disconnects. */
+void disconnectEvent(Client c){
+  println("Client has disconnected");
+}
+
+// ServerEvent message is generated when a new client connects 
+// to an existing server.
+  void serverEvent(Server s, Client c) {
+//  void serverEvent(s, c) {
+  println("We have a new client: " + c.ip());
+}
+
 
 /* Right Mouse Drop Client */
 void mousePressed(){
    if (mouseButton == RIGHT) {
     //s.write("You will be disconnected now.rn");
-    println(s.ip() + " to been disconnected");
+    println(s.ip() + " to be disconnected");
 //    s.disconnect(c);
     s.disconnect(c);
+    println(s.ip() + " has been disconnected");
    }  
 } //MousePressed
 
@@ -48,7 +94,9 @@ void draw()
     stroke(255);
     line(pmouseX, pmouseY, mouseX, mouseY);
     // Send mouse coords to other person
-    s.write(pmouseX + " " + pmouseY + " " + mouseX + " " + mouseY + "\n");
+    if (s.active() == true){
+      s.write(pmouseX + " " + pmouseY + " " + mouseX + " " + mouseY + "\n");
+    }
   }
   // Receive data from client
   c = s.available();    //Get available client.
