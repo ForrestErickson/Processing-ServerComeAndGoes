@@ -24,10 +24,12 @@
 import processing.net.*;
 
 Server myServer;
-Client myClient;
+public static Client myClient;
 String input;
 int data[];
 int dataIn; 
+
+int myBackground = 0;
 
 /* Support Functions */
 /* E for Exit to close*/
@@ -47,14 +49,31 @@ void keyPressed() {
      myServer.stop();
      println("Stopped socket on keyPressed.");
      //exit();
-  }
-  
+  }  
   if ((key== 'd'|| (key== 'D'))){
-     //Close Socket
-     println("Disconnecting socket.");
-     myServer.disconnect(myClient);
+     //Close Socket  ???thisClient???   
+//     thisClient = myServer.available();
+//     println("Disconnecting socket. Server: " + myServer + ", Client: " + thisClient);     
+     Client myClient = myServer.available();
+     println("Disconnecting socket. Server: " + myServer + ", Client: " + myClient);
+/*     
+     if (myClient != null){
+       myServer.disconnect(myClient);
+     }
+*/
+
+      try{
+         //do something that might throw NPE
+         myServer.disconnect(myClient);
+      }
+      catch(NullPointerException npe){
+         //uh oh, an NPE happened
+         println("I got a null pointer all right.");
+      }
+
+
      println("Disconnecting socket on keyPressed.");
-     exit();
+     //exit();
   } 
   
 }
@@ -63,33 +82,45 @@ void keyPressed() {
    
 /*This function is called when a client disconnects. */
 void disconnectEvent(Client myClient){
-  println("Client event disconnect.");
+  println("\nWe have a socket disconnect.");
+//  myServer.disconnect(myClient);
+   print("Server Says:  ");  
+  println(myClient.read());
+  myBackground = constrain( (myBackground-64), 0, 255) ;  
+  println("Client event disconnect. Background set to: " + myBackground);
 }
 
 // ServerEvent message is generated when a new client connects 
 // to an existing server.
   void serverEvent(Server myServer, Client myClient) {
 //  void serverEvent(s, c) {
-  println("We have a new socket client: " + myClient.ip());
+  println("\nWe have a new socket client: " + myClient.ip());
+  myBackground = constrain( (myBackground+64), 0, 255) ;  
+  println("Client event connect. Background set to: " + myBackground);
 }
 
 //Mouse press to send ST365 command or text.
 void mousePressed() {
+  if (myServer.active() == true){  
     if (mouseButton == LEFT){  
     println(">04");
-    myClient.write(">04\r");    
+    myServer.write(">04\r");    
     }
     else {
       println(">Hello world");
-      myClient.write(">Hello world.\n\r");
+      myServer.write(">Hello world.\n\r");
     }
+  }//Active
+  else{
+  }
+  
 } //MousePressed
 
 
 void setup() 
 {
   frameRate(10);  
-  background (255,0,0);
+  background (myBackground);
   size(200, 200); 
   
   /*Set up server. This coorisponds to sl_Socket which opens a socket, 
@@ -103,7 +134,7 @@ void setup()
 void draw() 
 {
     if (myServer.active() == true) {
-    background (255);
+    background (myBackground);
 /*
  //   println("Server connected.");
     if (myServer.available() > 0) {
@@ -113,9 +144,31 @@ void draw()
       //println("Client data recevied; " +stringIn);
     }
 */
-  } else { //Server not aactive
-    background(0);
-    println("Server is not active."); 
+    Client thisClient = myServer.available();
+    // If the client is not null, and says something, display what it said
+    if (thisClient !=null) {
+      String whatClientSaid = thisClient.readString();
+      if (whatClientSaid != null) {
+        println(thisClient.ip() + "\t" + whatClientSaid);
+      if (whatClientSaid.startsWith(">04")) {
+//        String myReply = "#04 Hello world. From Server.\n\r";
+        String myReply = "#040000000200000000000000000000019000\r";
+        myServer.write(myReply);
+        println("Reply with:" + myReply);
+      }
+      if (whatClientSaid.startsWith(">05")) {
+        String myReply = "#05000A\r";
+//        String myReply = "#05 Good buy cold crule world. From Server.\n\r";
+        myServer.write(myReply);
+        println("Reply with:" + myReply);
+      }
+      }//Not null from client
+  }//Client abailable 
+
+  } 
+  else { //Server not aactive
+    background(255,0,0); //Red to indicate no server.
+    //println("Server is not active."); 
   }
  
 }//draw()
