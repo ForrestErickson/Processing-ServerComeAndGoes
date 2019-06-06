@@ -14,12 +14,20 @@
 /* Modified by F. Lee Erickson to test out more server features. */
 /* 3 June 2019. */
 
+// Rename ServerLaptop.
+// Lee Erickson
+// 6 June 2019
+// First work with Client Example 2 to simulate a ST365 server. 
+// Ultimatly to work as a server to a ST365 which is a client.
+
+
 import processing.net.*;
 
-Server s;
-Client c;
+Server myServer;
+Client myClient;
 String input;
 int data[];
+int dataIn; 
 
 /* Support Functions */
 /* E for Exit to close*/
@@ -27,7 +35,7 @@ void keyPressed() {
   if ((key== 'a'|| (key== 'A'))){
      //Socket Active Test
      println("Testing for active server.");
-     if (s.active()== true) {
+     if (myServer.active()== true) {
        println("Server active.");  
        } else {
        println("Server not active.");
@@ -36,16 +44,16 @@ void keyPressed() {
  if ((key =='s') || (key== 'S')){
      //stop Socket
      println("Stoping socket.");
-     s.stop();
+     myServer.stop();
      println("Stopped socket on keyPressed.");
      //exit();
   }
   
-  if ((key== 'e'|| (key== 'E'))){
+  if ((key== 'd'|| (key== 'D'))){
      //Close Socket
      println("Disconnecting socket.");
-     s.disconnect(c);
-     println("Exiting socket on keyPressed.");
+     myServer.disconnect(myClient);
+     println("Disconnecting socket on keyPressed.");
      exit();
   } 
   
@@ -54,58 +62,60 @@ void keyPressed() {
  
    
 /*This function is called when a client disconnects. */
-void disconnectEvent(Client c){
-  println("Client has disconnected");
+void disconnectEvent(Client myClient){
+  println("Client event disconnect.");
 }
 
 // ServerEvent message is generated when a new client connects 
 // to an existing server.
-  void serverEvent(Server s, Client c) {
+  void serverEvent(Server myServer, Client myClient) {
 //  void serverEvent(s, c) {
-  println("We have a new client: " + c.ip());
+  println("We have a new socket client: " + myClient.ip());
 }
 
-
-/* Right Mouse Drop Client */
-void mousePressed(){
-   if (mouseButton == RIGHT) {
-    //s.write("You will be disconnected now.rn");
-    println(s.ip() + " to be disconnected");
-//    s.disconnect(c);
-    s.disconnect(c);
-    println(s.ip() + " has been disconnected");
-   }  
+//Mouse press to send ST365 command or text.
+void mousePressed() {
+    if (mouseButton == LEFT){  
+    println(">04");
+    myClient.write(">04\r");    
+    }
+    else {
+      println(">Hello world");
+      myClient.write(">Hello world.\n\r");
+    }
 } //MousePressed
 
 
 void setup() 
 {
-  size(450, 255);
-  background(204);
-  stroke(0);
-  frameRate(5); // Slow it down a little
-  s = new Server(this, 12345); // Start a simple server on a port
+  frameRate(10);  
+  background (255,0,0);
+  size(200, 200); 
+  
+  /*Set up server. This coorisponds to sl_Socket which opens a socket, 
+  sl_Bind which is where we set port, and
+  sl_Listen where we start listening.
+  */
+  //myServer = new Server(this, 12345); // Start a simple server on a port
+  myServer = new Server(this, 23); // Start on Telnet even though we are RAW socket. 
 }
 
 void draw() 
 {
-  if (mousePressed == true) {
-    // Draw our line
-    stroke(255);
-    line(pmouseX, pmouseY, mouseX, mouseY);
-    // Send mouse coords to other person
-    if (s.active() == true){
-      s.write(pmouseX + " " + pmouseY + " " + mouseX + " " + mouseY + "\n");
+    if (myServer.active() == true) {
+    background (255);
+/*
+ //   println("Server connected.");
+    if (myServer.available() > 0) {
+      background (0,0,255);
+      dataIn = myClient.read();
+      print(char(dataIn));
+      //println("Client data recevied; " +stringIn);
     }
+*/
+  } else { //Server not aactive
+    background(0);
+    println("Server is not active."); 
   }
-  // Receive data from client
-  c = s.available();    //Get available client.
-  if (c != null) {
-    input = c.readString();
-    input = input.substring(0, input.indexOf("\n")); // Only up to the newline
-    data = int(split(input, ' ')); // Split values into an array
-    // Draw line using received coords
-    stroke(0);
-    line(data[0], data[1], data[2], data[3]);
-  }
-}
+ 
+}//draw()
