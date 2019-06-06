@@ -24,7 +24,8 @@
 import processing.net.*;
 
 Server myServer;
-public static Client myClient;
+Client myClient;
+Client thisClient; 
 String input;
 int data[];
 int dataIn; 
@@ -51,43 +52,28 @@ void keyPressed() {
      //exit();
   }  
   if ((key== 'd'|| (key== 'D'))){
-     //Close Socket  ???thisClient???   
-//     thisClient = myServer.available();
-//     println("Disconnecting socket. Server: " + myServer + ", Client: " + thisClient);     
-     Client myClient = myServer.available();
-     println("Disconnecting socket. Server: " + myServer + ", Client: " + myClient);
-/*     
-     if (myClient != null){
-       myServer.disconnect(myClient);
+     //Disconnect Client Socket  ???thisClient???   
+     println("Disconnecting Client socket. Server: " + myServer + ", Client: " + myClient);
+     try{
+        //do something that might throw NPE
+        myServer.disconnect(myClient);
+        println("I did it. I got a Non null pointer and disconnected that client.");
      }
-*/
-
-      try{
-         //do something that might throw NPE
-         myServer.disconnect(myClient);
-      }
-      catch(NullPointerException npe){
-         //uh oh, an NPE happened
-         println("I got a null pointer all right.");
-      }
-
-
-     println("Disconnecting socket on keyPressed.");
-     //exit();
+     catch(NullPointerException npe){
+        //uh oh, an NPE happened
+        println("Exception, I got a null pointer all right.");
+     } //disconnect client();
   } 
-  
-}
+}// keyPressed()
 
  
    
 /*This function is called when a client disconnects. */
 void disconnectEvent(Client myClient){
-  println("\nWe have a socket disconnect.");
-//  myServer.disconnect(myClient);
-   print("Server Says:  ");  
-  println(myClient.read());
+  //println("\nWe have a client socket disconnect event.");
+  //println("Server Says:  " +myClient.read());  
   myBackground = constrain( (myBackground-64), 0, 255) ;  
-  println("Client event disconnect. Background set to: " + myBackground);
+  println("\tClient event disconnect. Background set to: " + myBackground + " Server Says:  " +myClient.read());
 }
 
 // ServerEvent message is generated when a new client connects 
@@ -144,9 +130,11 @@ void draw()
       //println("Client data recevied; " +stringIn);
     }
 */
-    Client thisClient = myServer.available();
+    thisClient = myServer.available();
     // If the client is not null, and says something, display what it said
     if (thisClient !=null) {
+      myClient = thisClient;  // Save off the client object for the key close event.
+//      println("myClient is: " + myClient );
       String whatClientSaid = thisClient.readString();
       if (whatClientSaid != null) {
         println(thisClient.ip() + "\t" + whatClientSaid);
