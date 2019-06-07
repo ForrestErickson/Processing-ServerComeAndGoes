@@ -1,14 +1,6 @@
 /**
- * Shared Drawing Canvas (Server) 
+ * Transmongrafied from "Shared Drawing Canvas" (Server) Example 
  * by Alexander R. Galloway. 
- * 
- * A server that shares a drawing canvas between two computers. 
- * In order to open a socket connection, a server must select a 
- * port on which to listen for incoming clients and through which 
- * to communicate. Once the socket is established, a client may 
- * connect to the server and send or receive commands and data.
- * Get this program running and then start the Shared Drawing
- * Canvas (Client) program so see how they interact.
  */
 
 /* Modified by F. Lee Erickson to test out more server features. */
@@ -19,6 +11,9 @@
 // 6 June 2019
 // First work with Client Example 2 to simulate a ST365 server. 
 // Ultimatly to work as a server to a ST365 which is a client.
+// 7 June 2019 Server opens up on port 23 and once a client connects indicates in draw window. 
+// Client data printed to console.  Mouse sends some data to client.
+// The client must receive at least one character before it can disconnect with out exception.
 
 
 import processing.net.*;
@@ -28,13 +23,17 @@ Client myClient;
 Client thisClient; 
 String input;
 int data[];
-int dataIn; 
+int dataIn;
+int MY_PORT = 23; // Start on Telnet even though we are RAW socket.
 
 int myBackground = 0;
 
 /* Support Functions */
-/* E for Exit to close*/
+
+/* User Interface with keyboard*/
 void keyPressed() {
+  //Proccess keys of UI.
+  
   if ((key== 'a'|| (key== 'A'))){
      //Socket Active Test
      println("Testing for active server.");
@@ -43,14 +42,8 @@ void keyPressed() {
        } else {
        println("Server not active.");
          }
-   }
- if ((key =='s') || (key== 'S')){
-     //stop Socket
-     println("Stoping socket.");
-     myServer.stop();
-     println("Stopped socket on keyPressed.");
-     //exit();
-  }  
+   }// A
+ 
   if ((key== 'd'|| (key== 'D'))){
      //Disconnect Client Socket  ???thisClient???   
      println("Disconnecting Client socket. Server: " + myServer + ", Client: " + myClient);
@@ -61,19 +54,45 @@ void keyPressed() {
      }
      catch(NullPointerException npe){
         //uh oh, an NPE happened
-        println("Exception, I got a null pointer all right.");
+        println("Client disconnect exception, I got a null pointer all right.");
      } //disconnect client();
-  } 
-}// keyPressed()
-
- 
+  }//D
+  
+    if ((key== 'e'|| (key== 'E'))){
+     //Stop Clients, Server and then Exit this program     
+     try {
+       myServer.disconnect(myClient);
+       println("Client disconnect.");
+     } catch (Exception npe)
+     {
+       println("Clien Disconnect exception with: " + npe);
+     }
+     try {
+       myServer.stop();
+       println("Server Stop");
+     } catch (Exception npe) 
+       {
+       println("Server Stop exception with: " + npe);
+       }
+     println("Good buy.");
+     exit();
+   }// E
+  
+  if ((key =='s') || (key== 'S')){
+     //stop Socket
+     println("Stoping Server.");
+     myServer.stop();
+     println("Stopped Server on keyPressed.");
+     //exit();
+  }//S  
+}// User Interface keyPressed() 
    
 /*This function is called when a client disconnects. */
 void disconnectEvent(Client myClient){
   //println("\nWe have a client socket disconnect event.");
   //println("Server Says:  " +myClient.read());  
   myBackground = constrain( (myBackground-64), 0, 255) ;  
-  println("\tClient event disconnect. Background set to: " + myBackground + " Server Says:  " +myClient.read());
+  println("Client event disconnect. Background set to: " + myBackground + " Server Says:  " +myClient.read());
 }
 
 // ServerEvent message is generated when a new client connects 
@@ -105,7 +124,7 @@ void mousePressed() {
 
 void setup() 
 {
-  frameRate(10);  
+  frameRate(60);  
   background (myBackground);
   size(200, 200); 
   
@@ -114,22 +133,14 @@ void setup()
   sl_Listen where we start listening.
   */
   //myServer = new Server(this, 12345); // Start a simple server on a port
-  myServer = new Server(this, 23); // Start on Telnet even though we are RAW socket. 
+  myServer = new Server(this, MY_PORT);  
 }
 
 void draw() 
 {
     if (myServer.active() == true) {
     background (myBackground);
-/*
- //   println("Server connected.");
-    if (myServer.available() > 0) {
-      background (0,0,255);
-      dataIn = myClient.read();
-      print(char(dataIn));
-      //println("Client data recevied; " +stringIn);
-    }
-*/
+
     thisClient = myServer.available();
     // If the client is not null, and says something, display what it said
     if (thisClient !=null) {
