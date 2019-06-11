@@ -14,7 +14,8 @@
 // 7 June 2019 Server opens up on port 23 and once a client connects indicates in draw window. 
 // Client data printed to console.  Mouse sends some data to client.
 // The client must receive at least one character before it can disconnect with out exception.
-
+// 11 June Connected with CC3220SocketFunction success.
+// Add text into window for status and messages.
 
 import processing.net.*;
 
@@ -33,6 +34,8 @@ int MY_PORT = 5001; // Start on P2P port used by Android.
 
 int myBackground = 0;
 String s_clientStatus = "Not initilized";
+String s_messageServer = "Not initilized";
+String s_messageClient = "Not initilized";
 
 /* Support Functions */
 
@@ -118,10 +121,14 @@ void mousePressed() {
     if (mouseButton == LEFT){  
     println(">04");
     myServer.write(">04\r");    
+    s_messageServer = ">04\r";
+    s_messageClient = "";
     }
     else {
       println(">Hello world");
       myServer.write(">Hello world.\n\r");
+      s_messageServer = ">Hello world.\n\r";
+      s_messageClient = "";
     }
   }//Active
   else{
@@ -134,7 +141,7 @@ void setup()
 {
   frameRate(60);  
   background (myBackground);
-  size(200, 200); 
+  size(400, 200); 
  
   f = createFont("Arial",6,true);     // Create Font 
   textAlign(RIGHT);                    // Credit will be in lower right corner.
@@ -150,23 +157,29 @@ void draw()
 {
     if (myServer.active() == true) {
     background (myBackground);
-    text("Server connected",200, 10);
-    text(s_clientStatus,200, 20);
+    text("Server connected",400, 10);
+    text(s_clientStatus,400, 20);
+    text("Server:" + s_messageServer,400, 40);
+    text("Client: " + s_messageClient,400, 50);
     
 
     thisClient = myServer.available();
     // If the client is not null, and says something, display what it said
     if (thisClient !=null) {
-      text("Client transmitting",100, 30);
+      text("Client transmitting",400, 30);
       myClient = thisClient;  // Save off the client object for the key close event.
 //      println("myClient is: " + myClient );
       String whatClientSaid = thisClient.readString();
       if (whatClientSaid != null) {
         println(thisClient.ip() + "\t" + whatClientSaid);
+        s_messageServer = "";
+        s_messageClient = whatClientSaid;
       if (whatClientSaid.startsWith(">04")) {
 //        String myReply = "#04 Hello world. From Server.\n\r";
         String myReply = "#040000000200000000000000000000019000\r";
         myServer.write(myReply);
+        s_messageServer = myReply;
+        s_messageClient = ">04";
         println("Reply with:" + myReply);
       }
       if (whatClientSaid.startsWith(">05")) {
