@@ -20,7 +20,10 @@ import processing.net.*;
 
 Server myServer;
 Client myClient;
-Client thisClient; 
+Client thisClient;
+
+PFont f;                          // Declare PFont variable
+
 String input;
 int data[];
 int dataIn;
@@ -29,6 +32,7 @@ int dataIn;
 int MY_PORT = 5001; // Start on P2P port used by Android.
 
 int myBackground = 0;
+String s_clientStatus = "Not initilized";
 
 /* Support Functions */
 
@@ -94,6 +98,7 @@ void disconnectEvent(Client myClient){
   //println("\nWe have a client socket disconnect event.");
   //println("Server Says:  " +myClient.read());  
   myBackground = constrain( (myBackground-64), 0, 255) ;  
+  s_clientStatus = "Client disconnected";
   println("Client event disconnect. Background set to: " + myBackground + " Server Says:  " +myClient.read());
 }
 
@@ -102,7 +107,8 @@ void disconnectEvent(Client myClient){
   void serverEvent(Server myServer, Client myClient) {
 //  void serverEvent(s, c) {
   println("\nWe have a new socket client: " + myClient.ip());
-  myBackground = constrain( (myBackground+64), 0, 255) ;  
+  myBackground = constrain( (myBackground+64), 0, 255) ;
+  s_clientStatus = "Client connected";
   println("Client event connect. Background set to: " + myBackground);
 }
 
@@ -129,7 +135,9 @@ void setup()
   frameRate(60);  
   background (myBackground);
   size(200, 200); 
-  
+ 
+  f = createFont("Arial",6,true);     // Create Font 
+  textAlign(RIGHT);                    // Credit will be in lower right corner.
   /*Set up server. This coorisponds to sl_Socket which opens a socket, 
   sl_Bind which is where we set port, and
   sl_Listen where we start listening.
@@ -142,10 +150,14 @@ void draw()
 {
     if (myServer.active() == true) {
     background (myBackground);
+    text("Server connected",200, 10);
+    text(s_clientStatus,200, 20);
+    
 
     thisClient = myServer.available();
     // If the client is not null, and says something, display what it said
     if (thisClient !=null) {
+      text("Client transmitting",100, 30);
       myClient = thisClient;  // Save off the client object for the key close event.
 //      println("myClient is: " + myClient );
       String whatClientSaid = thisClient.readString();
@@ -169,6 +181,7 @@ void draw()
   } 
   else { //Server not aactive
     background(255,0,0); //Red to indicate no server.
+    text("Server not active",100, 100);
     //println("Server is not active."); 
   }
  
