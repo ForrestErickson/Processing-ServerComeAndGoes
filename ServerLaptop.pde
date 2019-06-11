@@ -24,7 +24,9 @@ Client thisClient;
 String input;
 int data[];
 int dataIn;
-int MY_PORT = 23; // Start on Telnet even though we are RAW socket.
+
+//int MY_PORT = 23; // Start on Telnet even though we are RAW socket.
+int MY_PORT = 5001; // Start on P2P port used by Android.
 
 int myBackground = 0;
 
