@@ -1,13 +1,12 @@
-/**
- * Transmongrafied from "Shared Drawing Canvas" (Server) Example 
- * by Alexander R. Galloway. 
+/** ServerLaptop
+ *
+ * /authorF. Lee Erickson.  
+ * /brief Modified by, to indicate server status and trafic with client.
+ *
+ * 3 June 2019. 
+ * Transmongrafied from "Shared Drawing Canvas" (Server) Example by Alexander R. Galloway. 
  */
 
-/* Modified by F. Lee Erickson to test out more server features. */
-/* 3 June 2019. */
-
-// Rename ServerLaptop.
-// Lee Erickson
 // 6 June 2019
 // First work with Client Example 2 to simulate a ST365 server. 
 // Ultimatly to work as a server to a ST365 which is a client.
@@ -22,15 +21,14 @@ import processing.net.*;
 Server myServer;
 Client myClient;
 Client thisClient;
+//int MY_PORT = 23; // Start on Telnet even though we are RAW socket.
+int MY_PORT = 5001; // Start on P2P port used by Android.
 
 PFont f;                          // Declare PFont variable
 
 String input;
 int data[];
 int dataIn;
-
-//int MY_PORT = 23; // Start on Telnet even though we are RAW socket.
-int MY_PORT = 5001; // Start on P2P port used by Android.
 
 int myBackground = 0;
 String s_clientStatus = "Not initilized";
@@ -102,6 +100,8 @@ void disconnectEvent(Client myClient){
   //println("Server Says:  " +myClient.read());  
   myBackground = constrain( (myBackground-64), 0, 255) ;  
   s_clientStatus = "Client disconnected";
+  s_messageServer = "";
+  s_messageClient = "";
   println("Client event disconnect. Background set to: " + myBackground + " Server Says:  " +myClient.read());
 }
 
