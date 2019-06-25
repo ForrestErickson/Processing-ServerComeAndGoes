@@ -107,7 +107,7 @@ void disconnectEvent(Client myClient){
   myBackground = color(myred, mygreen, myblue) ;
 
   s_clientStatus = "Client disconnected";
-  s_messageServer = "";
+  //s_messageServer = "";
   s_messageClient = "";
   println("Client event disconnect. Background set to: " + myBackground + " Server Says:  " +myClient.read());
 }
@@ -161,7 +161,6 @@ void setup()
   sl_Bind which is where we set port, and
   sl_Listen where we start listening.
   */
-  //myServer = new Server(this, 12345); // Start a simple server on a port
   myServer = new Server(this, MY_PORT);  
 }
 
@@ -170,10 +169,9 @@ void draw()
     if (myServer.active() == true) {
     background (myBackground);
     text("Server connected",400, 10);
-    text(s_clientStatus,400, 20);
-    text("Server:" + s_messageServer,400, 40);
-    text("Client: " + s_messageClient,400, 50);
-    
+    text("Client Connection: "+s_clientStatus,400, 20);
+    text("Client: " + s_messageClient,400, 40);
+    text("Server:" + s_messageServer,400, 50);    
 
     thisClient = myServer.available();
     // If the client is not null, and says something, display what it said
@@ -206,6 +204,7 @@ void draw()
   } 
   else { //Server not aactive
     background(255,0,0); //Red to indicate no server.
+    s_messageServer = "Server not active";
     text("Server not active",100, 100);
     //println("Server is not active."); 
   }
