@@ -186,7 +186,7 @@ void draw()
         s_messageClient = whatClientSaid;
       if (whatClientSaid.startsWith(">04")) {
 //        String myReply = "#04 Hello world. From Server.\n\r";
-        String myReply = "#040000000200000000000000000000019000\r";
+        String myReply = "#040000000200000000000000000000019000\r\n";
         myServer.write(myReply);
         s_messageServer = myReply;
         s_messageClient = ">04";
