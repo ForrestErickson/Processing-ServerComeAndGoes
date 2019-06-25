@@ -29,8 +29,10 @@ PFont f;                          // Declare PFont variable
 String input;
 int data[];
 int dataIn;
+float myred = 0; float mygreen= 0; float myblue = 0;
+color myBackground = color(0,0,0);
+//int myBackground = 0;
 
-int myBackground = 0;
 String s_clientStatus = "Not initilized";
 String s_messageServer = "Not initilized";
 String s_messageClient = "Not initilized";
@@ -98,7 +100,12 @@ void keyPressed() {
 void disconnectEvent(Client myClient){
   //println("\nWe have a client socket disconnect event.");
   //println("Server Says:  " +myClient.read());  
-  myBackground = constrain( (myBackground-64), 0, 255) ;  
+  //myBackground = constrain( (myBackground-64), 0, 255) ;
+  myred = constrain( (red(myBackground) -64), 0, 255);  
+  mygreen = constrain( (green(myBackground) -64), 0, 255);  
+  myblue = constrain( (blue(myBackground) -64), 0, 255);  
+  myBackground = color(myred, mygreen, myblue) ;
+
   s_clientStatus = "Client disconnected";
   s_messageServer = "";
   s_messageClient = "";
@@ -110,7 +117,12 @@ void disconnectEvent(Client myClient){
   void serverEvent(Server myServer, Client myClient) {
 //  void serverEvent(s, c) {
   println("\nWe have a new socket client: " + myClient.ip());
-  myBackground = constrain( (myBackground+64), 0, 255) ;
+//  myBackground = constrain( (myBackground+64), 0, 255) ;
+  myred = constrain( (red(myBackground) +64), 0, 255);  
+  mygreen = constrain( (green(myBackground) +64), 0, 255);  
+  myblue = constrain( (blue(myBackground) +64), 0, 255);  
+  myBackground = color(myred, mygreen, myblue) ;
+  
   s_clientStatus = "Client connected";
   println("Client event connect. Background set to: " + myBackground);
 }
