@@ -1,6 +1,6 @@
-/** ServerLaptop
+/** ServerComeAndGoes
  *
- * /authorF. Lee Erickson.  
+ * /author F. Lee Erickson.  
  * /brief Modified by, to indicate server status and trafic with client.
  *
  * 3 June 2019. 
@@ -15,14 +15,18 @@
 // The client must receive at least one character before it can disconnect with out exception.
 // 11 June Connected with CC3220SocketFunction success.
 // Add text into window for status and messages.
+// Server responds to client message ">04" with a string.
+// Server responds to client message ">05" with a string.
+// 26 June 2019 Tested with the client which tries to reconnect if server is lost and is working. 
+// 27 June 2019 rename from ServerLaptop to ServerComeAndGoes 
 
 import processing.net.*;
 
 Server myServer;
 Client myClient;
 Client thisClient;
-//int MY_PORT = 23; // Start on Telnet even though we are RAW socket.
-int MY_PORT = 5001; // Start on P2P port used by Android.
+int MY_PORT = 23; // Start on Telnet even though we are RAW socket.
+//int MY_PORT = 5001; // Start on P2P port used by Android.
 
 PFont f;                          // Declare PFont variable
 
