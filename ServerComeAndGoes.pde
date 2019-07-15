@@ -5,6 +5,8 @@
  *
  * 3 June 2019. 
  * Transmongrafied from "Shared Drawing Canvas" (Server) Example by Alexander R. Galloway. 
+ * This server has features for connection and disconnection of client and server. Developed to test embedded client connectivity.
+ * A Proccessing client is also developed to allow test and development of this server. Client file name: ClientWithReconnect.  
  */
 
 // 6 June 2019
@@ -18,7 +20,8 @@
 // Server responds to client message ">04" with a string.
 // Server responds to client message ">05" with a string.
 // 26 June 2019 Tested with the client which tries to reconnect if server is lost and is working. 
-// 27 June 2019 rename from ServerLaptop to ServerComeAndGoes 
+// 27 June 2019 rename from ServerLaptop to ServerComeAndGoes
+// 15 July. Remove commented out code for when window was monocrome.  Improve window text and color prompts for more conditions (server not active).
 
 import processing.net.*;
 
@@ -34,9 +37,10 @@ String input;
 int data[];
 int dataIn;
 float myred = 0; float mygreen= 0; float myblue = 0;
-color myBackground = color(0,0,0);
+color myBackground = color(255,0,0);
 //int myBackground = 0;
 
+String s_serverStatus = "Not initilized";
 String s_clientStatus = "Not initilized";
 String s_messageServer = "Not initilized";
 String s_messageClient = "Not initilized";
@@ -102,16 +106,13 @@ void keyPressed() {
    
 /*This function is called when a client disconnects. */
 void disconnectEvent(Client myClient){
-  //println("\nWe have a client socket disconnect event.");
-  //println("Server Says:  " +myClient.read());  
-  //myBackground = constrain( (myBackground-64), 0, 255) ;
+  /* Make background lighter for each connection event.*/
   myred = constrain( (red(myBackground) -64), 0, 255);  
   mygreen = constrain( (green(myBackground) -64), 0, 255);  
   myblue = constrain( (blue(myBackground) -64), 0, 255);  
   myBackground = color(myred, mygreen, myblue) ;
 
   s_clientStatus = "Client disconnected";
-  //s_messageServer = "";
   s_messageClient = "";
   println("Client event disconnect. Background set to: " + myBackground + " Server Says:  " +myClient.read());
 }
@@ -121,7 +122,6 @@ void disconnectEvent(Client myClient){
   void serverEvent(Server myServer, Client myClient) {
 //  void serverEvent(s, c) {
   println("\nWe have a new socket client: " + myClient.ip());
-//  myBackground = constrain( (myBackground+64), 0, 255) ;
   myred = constrain( (red(myBackground) +64), 0, 255);  
   mygreen = constrain( (green(myBackground) +64), 0, 255);  
   myblue = constrain( (blue(myBackground) +64), 0, 255);  
@@ -161,18 +161,24 @@ void setup()
  
   f = createFont("Arial",6,true);     // Create Font 
   textAlign(RIGHT);                    // Credit will be in lower right corner.
+  text("Set up started",400, 10);
   /*Set up server. This coorisponds to sl_Socket which opens a socket, 
   sl_Bind which is where we set port, and
   sl_Listen where we start listening.
   */
-  myServer = new Server(this, MY_PORT);  
+  myServer = new Server(this, MY_PORT);
+  text("Server started",400, 10);  
+  if (myServer.active() == true) {
+    myBackground = color(0,0,0);
+    s_serverStatus = "Server is active.";
+  }
 }
 
 void draw() 
 {
     if (myServer.active() == true) {
     background (myBackground);
-    text("Server connected",400, 10);
+    text(s_serverStatus,400, 10);
     text("Client Connection: "+s_clientStatus,400, 20);
     text("Client: " + s_messageClient,400, 40);
     text("Server:" + s_messageServer,400, 50);    
@@ -207,10 +213,14 @@ void draw()
 
   } 
   else { //Server not aactive
-    background(255,0,0); //Red to indicate no server.
+    myBackground = color(255,0,0); //Red to indicate no server.
+    background (myBackground);
     s_messageServer = "Server not active";
-    text("Server not active",100, 100);
-    //println("Server is not active."); 
+    s_serverStatus = "Server not active";
+    text(s_serverStatus,400, 10);
+    text("Client Connection: "+s_clientStatus,400, 20);
+    text("Client: " + s_messageClient,400, 40);
+    text("Server:" + s_messageServer,400, 50);       
   }
  
 }//draw()
