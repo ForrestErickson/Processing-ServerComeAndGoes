@@ -73,8 +73,8 @@ void mousePressed() {
     }
     else {
       println(">Hello world");
-      myServer.write(">Hello world.\n\r");
-      s_messageServer = ">Hello world.\n\r";
+      myServer.write(">Hello from server.\n\r");
+      s_messageServer = ">Hello from server.\n\r";
       s_messageClient = "";
     }
   }//Active

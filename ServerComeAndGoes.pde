@@ -1,9 +1,9 @@
 /** ServerComeAndGoes
  *
- * /author F. Lee Erickson.  
+ * /author F. Lee Erickson.
+ * /date 3 June 2019.
  * /brief Modified by, to indicate server status and trafic with client.
- *
- * 3 June 2019. 
+ * 
  * Transmongrafied from "Shared Drawing Canvas" (Server) Example by Alexander R. Galloway. 
  * This server has features for connection and disconnection of client and server. Developed to test embedded client connectivity.
  * A Proccessing client is also developed to allow test and development of this server. Client file name: ClientWithReconnect.  
@@ -24,14 +24,12 @@
 // 15 July. Remove commented out code for when window was monocrome.  Improve window text and color prompts for more conditions (server not active).
 // 15 July. Move keypress and mouse press to UserInput tab.  
 
-
 import processing.net.*;
 
 Server myServer;
 Client myClient;
 Client thisClient;
 int MY_PORT = 23; // Start on Telnet even though we are RAW socket.
-//int MY_PORT = 5001; // Start on P2P port used by Android.
 
 PFont f;                          // Declare PFont variable
 
@@ -44,6 +42,7 @@ color myBackground = color(255,0,0);
 
 String s_serverStatus = "Not initilized";
 String s_clientStatus = "Not initilized";
+String s_clientAddress = "Not initilized";
 String s_messageServer = "Not initilized";
 String s_messageClient = "Not initilized";
 
@@ -57,24 +56,22 @@ void disconnectEvent(Client myClient){
   mygreen = constrain( (green(myBackground) -64), 0, 255);  
   myblue = constrain( (blue(myBackground) -64), 0, 255);  
   myBackground = color(myred, mygreen, myblue) ;
-
-  s_clientStatus = "Client disconnected";
+  s_clientStatus = "Client " + myClient.ip() + " has disconnected";
   s_messageClient = "";
-  println("Client event disconnect. Background set to: " + myBackground + " Server Says:  " +myClient.read());
+  println("Client " +myClient.ip()+ " has disconnected");
+//  println("Client event disconnect. Background set to: " + myBackground + " Server Says:  " +myClient.read());
 }
 
-// ServerEvent message is generated when a new client connects 
-// to an existing server.
+// ServerEvent message is generated when a new client connects to an existing server.
   void serverEvent(Server myServer, Client myClient) {
-//  void serverEvent(s, c) {
-  println("\nWe have a new socket client: " + myClient.ip());
+  s_clientAddress = myClient.ip();
+  println("\nWe have a new socket client: " + s_clientAddress);
   myred = constrain( (red(myBackground) +64), 0, 255);  
   mygreen = constrain( (green(myBackground) +64), 0, 255);  
   myblue = constrain( (blue(myBackground) +64), 0, 255);  
   myBackground = color(myred, mygreen, myblue) ;
-  
-  s_clientStatus = "Client connected";
-  println("Client event connect. Background set to: " + myBackground);
+  s_clientStatus = "Client connected from: " + s_clientAddress;
+//  println("Client event connect. Background set to: " + myBackground);
 }
 
 
@@ -88,8 +85,8 @@ void setup()
   textAlign(RIGHT);                    // Credit will be in lower right corner.
   text("Set up started",400, 10);
   /*Set up server. This coorisponds to sl_Socket which opens a socket, 
-  sl_Bind which is where we set port, and
-  sl_Listen where we start listening.
+  and sl_Bind which is where we set port, 
+  and sl_Listen where we start listening.
   */
   myServer = new Server(this, MY_PORT);
   text("Server started",400, 10);  
@@ -103,7 +100,7 @@ void draw()
 {
     if (myServer.active() == true) {
     background (myBackground);
-    text(s_serverStatus,400, 10);
+    text(s_serverStatus + " IP: " + Server.ip() + ":" + str(MY_PORT) ,400, 10);
     text("Client Connection: "+s_clientStatus,400, 20);
     text("Client: " + s_messageClient,400, 40);
     text("Server:" + s_messageServer,400, 50);    
@@ -134,14 +131,14 @@ void draw()
       }//Not null from client
     }//Client abailable 
 
-  } else { //Server not aactive
-    myBackground = color(255,0,0); //Red to indicate no server.
-    background (myBackground);
-    s_messageServer = "Server not active";
-    s_serverStatus = "Server not active";
-    text(s_serverStatus,400, 10);
-    text("Client Connection: "+s_clientStatus,400, 20);
-    text("Client: " + s_messageClient,400, 40);
-    text("Server:" + s_messageServer,400, 50);       
-  } 
+    } else { //Server not aactive
+      myBackground = color(255,0,0); //Red to indicate no server.
+      background (myBackground);
+      s_messageServer = "Server not active";
+      s_serverStatus = "Server not active";
+      text(s_serverStatus,400, 10);
+      text("Client Connection: "+s_clientStatus,400, 20);
+      text("Client: " + s_messageClient,400, 40);
+      text("Server:" + s_messageServer,400, 50);       
+    } 
 }//draw()
