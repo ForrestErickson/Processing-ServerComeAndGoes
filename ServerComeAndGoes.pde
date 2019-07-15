@@ -82,7 +82,7 @@ void setup()
 {
   frameRate(60);  
   background (myBackground);
-  size(400, 200); 
+  size(400, 400); 
  
   f = createFont("Arial",6,true);     // Create Font 
   textAlign(RIGHT);                    // Credit will be in lower right corner.
@@ -120,7 +120,6 @@ void draw()
         s_messageServer = "";
         s_messageClient = whatClientSaid;
       if (whatClientSaid.startsWith(">04")) {
-//        String myReply = "#04 Hello world. From Server.\n\r";
         String myReply = "#040000000200000000000000000000019000\r\n";
         myServer.write(myReply);
         s_messageServer = myReply;
@@ -129,15 +128,13 @@ void draw()
       }
       if (whatClientSaid.startsWith(">05")) {
         String myReply = "#05000A\r";
-//        String myReply = "#05 Good buy cold crule world. From Server.\n\r";
         myServer.write(myReply);
         println("Reply with:" + myReply);
-      }
+      }// Client sent >05.
       }//Not null from client
-  }//Client abailable 
+    }//Client abailable 
 
-  } 
-  else { //Server not aactive
+  } else { //Server not aactive
     myBackground = color(255,0,0); //Red to indicate no server.
     background (myBackground);
     s_messageServer = "Server not active";
@@ -146,6 +143,5 @@ void draw()
     text("Client Connection: "+s_clientStatus,400, 20);
     text("Client: " + s_messageClient,400, 40);
     text("Server:" + s_messageServer,400, 50);       
-  }
- 
+  } 
 }//draw()
