@@ -25,7 +25,7 @@
 // 15 July. Move keypress and mouse press to UserInput tab.  
 // 26 August. Add a loging file. 
 
-String myLogFileName = "myLog.txt";
+String myLogFileName = "ServerComAndGoes.log.txt";
 
 import processing.net.*;
 
@@ -60,6 +60,7 @@ void disconnectEvent(Client myClient){
   myblue = constrain( (blue(myBackground) -64), 0, 255);  
   myBackground = color(myred, mygreen, myblue) ;
   s_clientStatus = "Client " + myClient.ip() + " has disconnected";
+  appendTextToFile(myLogFileName, ("Client " + myClient.ip() + " has disconnected"));
   s_messageClient = "";
   println("Client " +myClient.ip()+ " has disconnected");
 //  println("Client event disconnect. Background set to: " + myBackground + " Server Says:  " +myClient.read());
@@ -83,7 +84,8 @@ void setup()
   frameRate(60);  
   background (myBackground);
   size(400, 400); 
-  appendTextToFile(myLogFileName, "Server log file.");
+//  String startTime = (str(year()) + str(month()) +str(day()) +"_" + str(hour()) + str(minute()) + str(second()) );
+  appendTextToFile(myLogFileName, ("Your log is born."));
  
   f = createFont("Arial",6,true);     // Create Font 
   textAlign(RIGHT);                    // Credit will be in lower right corner.

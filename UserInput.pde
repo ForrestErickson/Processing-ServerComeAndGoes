@@ -43,7 +43,8 @@ void keyPressed() {
        println("Server Stop exception with: " + npe);
        }
      println("Good buy.");
-     appendTextToFile(myLogFileName, "Your log is terminated");
+//     String endTime = (str(year()) + str(month()) +str(day()) +"_" + str(hour()) + str(minute()) + str(second()) );
+     appendTextToFile(myLogFileName, ("Your log is terminated."));
      exit();
    }// E
   

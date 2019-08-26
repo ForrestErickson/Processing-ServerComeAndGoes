@@ -12,6 +12,8 @@ import java.io.FileWriter;
 
 
 void appendTextToFile(String filename, String text){
+  String myTime = (str(year()) + str(month()) +str(day()) +"_" + str(hour()) + str(minute()) + str(second()) );
+  text = myTime +" " + text;
   File f = new File(dataPath(filename));
   if(!f.exists()){
     createFile(f);

@@ -1,2 +1,0 @@
-Server log file.
-Your log is terminated
