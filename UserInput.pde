@@ -26,7 +26,7 @@ void keyPressed() {
      } //disconnect client();
   }//D
   
-    if ((key== 'e'|| (key== 'E'))){
+    if ((key== 'e') || (key== 'E') || (key== 'X') || (key== 'x')){
      //Stop Clients, Server and then Exit this program     
      try {
        myServer.disconnect(myClient);
@@ -43,6 +43,7 @@ void keyPressed() {
        println("Server Stop exception with: " + npe);
        }
      println("Good buy.");
+     appendTextToFile(myLogFileName, "Your log is terminated");
      exit();
    }// E
   
@@ -52,7 +53,9 @@ void keyPressed() {
      myServer.stop();
      println("Stopped Server on keyPressed.");
      //exit();
-  }//S  
+  }//S
+  
+ 
 }// User Interface keyPressed() 
 
 

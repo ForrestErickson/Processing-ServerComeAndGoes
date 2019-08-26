@@ -23,6 +23,9 @@
 // 27 June 2019 rename from ServerLaptop to ServerComeAndGoes
 // 15 July. Remove commented out code for when window was monocrome.  Improve window text and color prompts for more conditions (server not active).
 // 15 July. Move keypress and mouse press to UserInput tab.  
+// 26 August. Add a loging file. 
+
+String myLogFileName = "myLog.txt";
 
 import processing.net.*;
 
@@ -80,6 +83,7 @@ void setup()
   frameRate(60);  
   background (myBackground);
   size(400, 400); 
+  appendTextToFile(myLogFileName, "Server log file.");
  
   f = createFont("Arial",6,true);     // Create Font 
   textAlign(RIGHT);                    // Credit will be in lower right corner.
