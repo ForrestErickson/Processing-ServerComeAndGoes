@@ -25,7 +25,7 @@
 // 15 July. Move keypress and mouse press to UserInput tab.  
 // 26 August. Add a loging file. 
 
-String myLogFileName = "ServerComAndGoes.log.txt";
+String myLogFileName = "ServerComeAndGoes.log.txt";
 String mySocket = "None";
 String myOldSocket = "None";
 Boolean Verbose = true; 
@@ -87,7 +87,8 @@ void setup()
   frameRate(60);  
   background (myBackground);
   size(400, 400); 
-//  String startTime = (str(year()) + str(month()) +str(day()) +"_" + str(hour()) + str(minute()) + str(second()) );
+  String startTime = (str(year()) + str(month()) +str(day()) +"_" + str(hour()) + str(minute()) + str(second()) );
+  myLogFileName = (startTime + "_" + myLogFileName);
   appendTextToFile(myLogFileName, ("Your log is born."));
  
   f = createFont("Arial",6,true);     // Create Font 
