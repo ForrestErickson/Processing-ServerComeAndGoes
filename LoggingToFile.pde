@@ -5,6 +5,8 @@
  * Can be used for big files with lots of rows, 
  * existing lines will not be rewritten
 */
+
+//  if (Verbose) {appendTextToFile(myLogFileName, "Client connected: " + s_clientAddress );}
  
  /* For logging text file */
 import java.io.BufferedWriter;

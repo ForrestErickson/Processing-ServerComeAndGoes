@@ -26,6 +26,9 @@
 // 26 August. Add a loging file. 
 
 String myLogFileName = "ServerComAndGoes.log.txt";
+String mySocket = "None";
+String myOldSocket = "None";
+Boolean Verbose = true; 
 
 import processing.net.*;
 
@@ -60,9 +63,9 @@ void disconnectEvent(Client myClient){
   myblue = constrain( (blue(myBackground) -64), 0, 255);  
   myBackground = color(myred, mygreen, myblue) ;
   s_clientStatus = "Client " + myClient.ip() + " has disconnected";
-  appendTextToFile(myLogFileName, ("Client " + myClient.ip() + " has disconnected"));
+  appendTextToFile(myLogFileName, ("Client disconnect: " + myClient.ip()));
   s_messageClient = "";
-  println("Client " +myClient.ip()+ " has disconnected");
+  println("Client disconnect: " + myClient.ip());
 //  println("Client event disconnect. Background set to: " + myBackground + " Server Says:  " +myClient.read());
 }
 
@@ -70,12 +73,12 @@ void disconnectEvent(Client myClient){
   void serverEvent(Server myServer, Client myClient) {
   s_clientAddress = myClient.ip();
   println("\nWe have a new socket client: " + s_clientAddress);
+  appendTextToFile(myLogFileName, "Client connected: " + s_clientAddress );
   myred = constrain( (red(myBackground) +64), 0, 255);  
   mygreen = constrain( (green(myBackground) +64), 0, 255);  
   myblue = constrain( (blue(myBackground) +64), 0, 255);  
   myBackground = color(myred, mygreen, myblue) ;
-  s_clientStatus = "Client connected from: " + s_clientAddress;
-//  println("Client event connect. Background set to: " + myBackground);
+  s_clientStatus = "Client connected: " + s_clientAddress;
 }
 
 
@@ -106,7 +109,14 @@ void draw()
 {
     if (myServer.active() == true) {
     background (myBackground);
-    text(s_serverStatus + " IP: " + Server.ip() + ":" + str(MY_PORT) ,400, 10);
+    mySocket = " IP: " + Server.ip() + ":" + str(MY_PORT); //<>//
+    if (mySocket.equals(myOldSocket) == false) {
+      appendTextToFile(myLogFileName, ("Server socket changed from: " + myOldSocket + " to: " + mySocket ));
+      println("Server socket changed from: " + myOldSocket + " to: " + mySocket );
+      myOldSocket = mySocket;
+    }
+    text(s_serverStatus + mySocket ,400, 10);
+//    text(s_serverStatus + " IP: " + Server.ip() + ":" + str(MY_PORT) ,400, 10);
     text("Client Connection: "+s_clientStatus,400, 20);
     text("Client: " + s_messageClient,400, 40);
     text("Server:" + s_messageServer,400, 50);    
