@@ -4,6 +4,9 @@
  * creates the file if it does not exist.
  * Can be used for big files with lots of rows, 
  * existing lines will not be rewritten
+ *
+ * Example usage: appendTextToFile(myLogFileName, ("Client disconnect: " + myClient.ip()));
+ * General usage: appendTextToFile(myLogFileName, String);
 */
 
 //  if (Verbose) {appendTextToFile(myLogFileName, "Client connected: " + s_clientAddress );}
@@ -12,6 +15,7 @@
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 
+String myLogFileName = "ServerComeAndGoes.log.txt";
 
 void appendTextToFile(String filename, String text){
   String myTime = (str(year()) + str(month()) +str(day()) +"_" + str(hour()) + str(minute()) + str(second()) );

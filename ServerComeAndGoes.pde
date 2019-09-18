@@ -25,7 +25,6 @@
 // 15 July. Move keypress and mouse press to UserInput tab.  
 // 26 August. Add a loging file. 
 
-String myLogFileName = "ServerComeAndGoes.log.txt";
 String mySocket = "None";
 String myOldSocket = "None";
 Boolean Verbose = true; 
