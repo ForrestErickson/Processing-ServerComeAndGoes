@@ -147,11 +147,34 @@ void draw()
         println("Reply with:" + myReply);
       }
       if (whatClientSaid.startsWith(">05")) {
-        String myReply = "#05000A\r";
+        String myReply = "#05000A\r\n";
         myServer.write(myReply);
         println("Reply with:" + myReply);
       }// Client sent >05.
-      }//Not null from client
+      
+      if (whatClientSaid.startsWith(">06")) {
+        String myReply = "#0600000000816D000300002000\r\n";
+        myServer.write(myReply);
+        println("Reply with:" + myReply);
+      }// Client sent >06.
+      
+      if (whatClientSaid.startsWith(">17")) {
+        String myReply = "#1703200320032005\r\n";
+        myServer.write(myReply);
+        println("Reply with:" + myReply);
+      }// Client sent >17.
+
+      if (whatClientSaid.startsWith(">19")) {
+        /*No action*/
+      }// Client sent >19.
+
+      if (whatClientSaid.startsWith(">70")) {
+        String myReply = "#7000\r\n";
+        myServer.write(myReply);
+        println("Reply with:" + myReply);
+      }// Client sent >70.
+
+    }//Not null from client
     }//Client abailable 
 
     } else { //Server not aactive
