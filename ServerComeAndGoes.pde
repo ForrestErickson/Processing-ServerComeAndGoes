@@ -34,6 +34,9 @@ import processing.net.*;
 Server myServer;
 Client myClient;
 Client thisClient;
+//String MY_IP_WIFI = "10.123.45.3";
+String MY_IP_WIFI = "Wi-Fi";
+
 int MY_PORT = 23; // Start on Telnet even though we are RAW socket.
 
 PFont f;                          // Declare PFont variable
@@ -98,6 +101,9 @@ void setup()
   and sl_Listen where we start listening.
   */
   myServer = new Server(this, MY_PORT);
+//  myServer = new Server(this, MY_PORT, MY_IP_WIFI);
+  
+  
   text("Server started",400, 10);  
   if (myServer.active() == true) {
     myBackground = color(0,0,0);
@@ -112,7 +118,8 @@ void draw()
     mySocket = " IP: " + Server.ip() + ":" + str(MY_PORT); //<>//
     if (mySocket.equals(myOldSocket) == false) {
       appendTextToFile(myLogFileName, ("Server socket changed from: " + myOldSocket + " to: " + mySocket ));
-      println("Server socket changed from: " + myOldSocket + " to: " + mySocket );
+      String myTime = (str(year()) + str(month()) +str(day()) +"_" + str(hour()) + str(minute()) + str(second()) );
+      println(myTime + " Server socket changed from: " + myOldSocket + " to: " + mySocket );
       myOldSocket = mySocket;
     }
     text(s_serverStatus + mySocket ,400, 10);
