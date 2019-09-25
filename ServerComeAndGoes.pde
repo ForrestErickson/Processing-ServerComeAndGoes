@@ -139,6 +139,14 @@ void draw()
         println(thisClient.ip() + "\t" + whatClientSaid);
         s_messageServer = "";
         s_messageClient = whatClientSaid;
+        
+     if (whatClientSaid.startsWith(">03")) {
+        String myReply = "#0304\r";
+        myServer.write(myReply);
+        println("Reply with:" + myReply);
+      }// Client sent >03.
+ 
+   
       if (whatClientSaid.startsWith(">04")) {
         String myReply = "#040000000200000000000000000000019000\r";
         myServer.write(myReply);
