@@ -1,4 +1,4 @@
-/** ServerComeAndGoes
+/** ServerComeAndGoes //<>//
  *
  * /author F. Lee Erickson.
  * /date 3 June 2019.
@@ -38,15 +38,21 @@ Client thisClient;
 String MY_IP_WIFI = "Wi-Fi";
 
 int MY_PORT = 23; // Start on Telnet even though we are RAW socket.
+boolean myServerRunning;
 
 PFont f;                          // Declare PFont variable
 
 String input;
 int data[];
 int dataIn;
-float myred = 0; float mygreen= 0; float myblue = 0;
-color myBackground = color(255,0,0);
+float myred = 0; 
+float mygreen= 0; 
+float myblue = 0;
+color myBackground = color(255, 0, 0);
 //int myBackground = 0;
+
+/* User Interface */
+int yInstructionLocation = 100;
 
 String s_serverStatus = "Not initilized";
 String s_clientStatus = "Not initilized";
@@ -56,9 +62,9 @@ String s_messageClient = "Not initilized";
 
 /* Support Functions */
 
-  
+
 /*This function is called when a client disconnects. */
-void disconnectEvent(Client myClient){
+void disconnectEvent(Client myClient) {
   /* Make background lighter for each connection event.*/
   myred = constrain( (red(myBackground) -64), 0, 255);  
   mygreen = constrain( (green(myBackground) -64), 0, 255);  
@@ -68,11 +74,11 @@ void disconnectEvent(Client myClient){
   appendTextToFile(myLogFileName, ("Client disconnect: " + myClient.ip()));
   s_messageClient = "";
   println("Client disconnect: " + myClient.ip());
-//  println("Client event disconnect. Background set to: " + myBackground + " Server Says:  " +myClient.read());
+  //  println("Client event disconnect. Background set to: " + myBackground + " Server Says:  " +myClient.read());
 }
 
 // ServerEvent message is generated when a new client connects to an existing server.
-  void serverEvent(Server myServer, Client myClient) {
+void serverEvent(Server myServer, Client myClient) {
   s_clientAddress = myClient.ip();
   println("\nWe have a new socket client: " + s_clientAddress);
   appendTextToFile(myLogFileName, "Client connected: " + s_clientAddress );
@@ -92,131 +98,78 @@ void setup()
   String startTime = (str(year()) + str(month()) +str(day()) +"_" + str(hour()) + str(minute()) + str(second()) );
   myLogFileName = (startTime + "_" + myLogFileName);
   appendTextToFile(myLogFileName, ("Your log is born."));
- 
-  f = createFont("Arial",6,true);     // Create Font 
-  textAlign(RIGHT);                    // Credit will be in lower right corner.
-  text("Set up started",400, 10);
-  /*Set up server. This coorisponds to sl_Socket which opens a socket, 
-  and sl_Bind which is where we set port, 
-  and sl_Listen where we start listening.
-  */
-  myServer = new Server(this, MY_PORT);
-//  myServer = new Server(this, MY_PORT, MY_IP_WIFI);
-  
-  
-  text("Server started",400, 10);  
-  if (myServer.active() == true) {
-    myBackground = color(0,0,0);
-    s_serverStatus = "Server is active.";
-  }
-}
 
-void draw() 
-{
-    if (myServer.active() == true) {
+  f = createFont("Arial", 6, true);     // Create Font 
+  textAlign(RIGHT);                    // Credit will be in lower right corner.
+  text("Set up started", 400, 10);
+
+  
+  /*Set up server. This coorisponds to sl_Socket which opens a socket, 
+   and sl_Bind which is where we set port, 
+   and sl_Listen where we start listening.
+   */
+  myServer = new Server(this, MY_PORT);
+  //  myServer = new Server(this, MY_PORT, MY_IP_WIFI);
+  text("Server started", 400, 10);  
+  if (myServer.active() == true) {
+    myBackground = color(0, 0, 0);
+    s_serverStatus = "Server is active.";
+    myServerRunning = true;
+  }else {
+    myServerRunning = false;
+  }
+} // setup()
+
+void draw() {
+  yInstructionLocation = 100; //Reset location for next instruction line
+  textAlign(RIGHT); 
+
+//  if (myServer.active() == true) {
+  if (myServerRunning) {
     background (myBackground);
-    mySocket = " IP: " + Server.ip() + ":" + str(MY_PORT); //<>//
+    mySocket = " IP: " + Server.ip() + ":" + str(MY_PORT);
     if (mySocket.equals(myOldSocket) == false) {
       appendTextToFile(myLogFileName, ("Server socket changed from: " + myOldSocket + " to: " + mySocket ));
       String myTime = (str(year()) + str(month()) +str(day()) +"_" + str(hour()) + str(minute()) + str(second()) );
       println(myTime + " Server socket changed from: " + myOldSocket + " to: " + mySocket );
       myOldSocket = mySocket;
     }
-    text(s_serverStatus + mySocket ,400, 10);
-//    text(s_serverStatus + " IP: " + Server.ip() + ":" + str(MY_PORT) ,400, 10);
-    text("Client Connection: "+s_clientStatus,400, 20);
-    text("Client: " + s_messageClient,400, 40);
-    text("Server:" + s_messageServer,400, 50);    
+  
+    text(s_serverStatus + mySocket, 400, 10);
+    //    text(s_serverStatus + " IP: " + Server.ip() + ":" + str(MY_PORT) ,400, 10);
+    text("Client Connection: "+s_clientStatus, 400, 20);
+    text("Client: " + s_messageClient, 400, 40);
+    text("Server:" + s_messageServer, 400, 50);
+    
+    printUserInstructions();
 
     thisClient = myServer.available();
     // If the client is not null, and says something, display what it said
     if (thisClient !=null) {
-      text("Client transmitting",400, 30);
+      text("Client transmitting", 400, 30);
       myClient = thisClient;  // Save off the client object for the key close event.
-//      println("myClient is: " + myClient );
+      //      println("myClient is: " + myClient );
       String whatClientSaid = thisClient.readString();
       if (whatClientSaid != null) {
         println(thisClient.ip() + "\t" + whatClientSaid);
         s_messageServer = "";
         s_messageClient = whatClientSaid;
-        
-     if (whatClientSaid.startsWith(">03")) {
-        String myReply = "#0304\r";
-        myServer.write(myReply);
-        println("Reply with:" + myReply);
-      }// Client sent >03.
- 
-   
-      if (whatClientSaid.startsWith(">04")) {
-        String myReply = "#040000000200000000000000000000019000\r";
-        myServer.write(myReply);
-        s_messageServer = myReply;
-        s_messageClient = ">04";
-        println("Reply with:" + myReply);
+
+        // Process client commands
+        processClientCommands(whatClientSaid);
       }
-      if (whatClientSaid.startsWith(">05")) {
-        String myReply = "#05000A\r";
-        myServer.write(myReply);
-        println("Reply with:" + myReply);
-      }// Client sent >05.
-      
-      if (whatClientSaid.startsWith(">06")) {
-        String myReply = "#0600000000816D000300002000\r";
-        myServer.write(myReply);
-        println("Reply with:" + myReply);
-      }// Client sent >06.
-      
-      if (whatClientSaid.startsWith(">09")) {
-        String myReply = "#0901\r";
-        myServer.write(myReply);
-        println("Reply with:" + myReply);
-      }// Client sent >09.
-
-      if (whatClientSaid.startsWith(">16")) {
-        String myReply = "#1604\r";
-        myServer.write(myReply);
-        println("Reply with:" + myReply);
-      }// Client sent >16.
-      
-      if (whatClientSaid.startsWith(">17")) {
-        String myReply = "#1703200320032005\r";
-        myServer.write(myReply);
-        println("Reply with:" + myReply);
-      }// Client sent >17.
-
-      if (whatClientSaid.startsWith(">19")) {
-        /*No action*/
-      }// Client sent >19.
-
-      if (whatClientSaid.startsWith(">20")) {
-        String myReply = "#2000010001000A00010001000B00010001000A00010001000A\r";
-        myServer.write(myReply);
-        println("Reply with:" + myReply);
-      }// Client sent >20.
-
-      if (whatClientSaid.startsWith(">22")) {
-        String myReply = "#220078007803E807\r";
-        myServer.write(myReply);
-        println("Reply with:" + myReply);
-      }// Client sent >22.
-
-      if (whatClientSaid.startsWith(">70")) {
-        String myReply = "#7000\r";
-        myServer.write(myReply);
-        println("Reply with:" + myReply);
-      }// Client sent >70.
-
-    }//Not null from client
-    }//Client abailable 
-
-    } else { //Server not aactive
-      myBackground = color(255,0,0); //Red to indicate no server.
+    }//Client available
+    }else { //Server not aactive
+      myBackground = color(255, 0, 0); //Red to indicate no server.
       background (myBackground);
       s_messageServer = "Server not active";
       s_serverStatus = "Server not active";
-      text(s_serverStatus,400, 10);
-      text("Client Connection: "+s_clientStatus,400, 20);
-      text("Client: " + s_messageClient,400, 40);
-      text("Server:" + s_messageServer,400, 50);       
-    } 
+      text(s_serverStatus, 400, 10);
+      text("Client Connection: "+s_clientStatus, 400, 20);
+      text("Client: " + s_messageClient, 400, 40);
+      text("Server:" + s_messageServer, 400, 50);   
+      text("Server Keyboard Commands", 10, yInstructionLocation);
+      printUserInstructions();
+  }
+
 }//draw()

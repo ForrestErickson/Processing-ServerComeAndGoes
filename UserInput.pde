@@ -48,14 +48,22 @@ void keyPressed() {
      exit();
    }// E
   
-  if ((key =='s') || (key== 'S')){
+  if (((key =='S') && (myServerRunning== true)) || ((key =='s') && (myServerRunning== true))){
      //stop Socket
      println("Stoping Server.");
+     myServerRunning = false;
      myServer.stop();
-     println("Stopped Server on keyPressed.");
+     myServer = null;
      //exit();
+  }//s
+
+  if (((key =='g') && (myServerRunning== false)) || ((key =='G') && (myServerRunning== false)) ){
+     println("Go to start new server.");
+     myServer = new Server(this, MY_PORT); // Starts a server     
+     myServerRunning = true;
+     myBackground = color(0,0,0); //Set to black when server started
   }//S
-  
+
  
 }// User Interface keyPressed() 
 
@@ -68,7 +76,8 @@ void keyPressed() {
 
 //Mouse press to send ST365 command or text.
 void mousePressed() {
-  if (myServer.active() == true){  
+//  if (myServer.active() == true){  
+  if (myServerRunning){  
     if (mouseButton == LEFT){  
     println(">04");
     myServer.write(">04\r");    
@@ -86,3 +95,14 @@ void mousePressed() {
   }
   
 } //MousePressed
+
+void printUserInstructions(){
+    /*User menu*/
+    textAlign(LEFT); 
+    text("KEYBOARD COMMANDS:", 10, yInstructionLocation); yInstructionLocation +=10;
+    text("A or a: returns server Active status", 20, yInstructionLocation); yInstructionLocation +=10;
+    text("D or d:  commands Disconnect client socket", 20, yInstructionLocation); yInstructionLocation +=10;
+    text("E or e or X or x: will EXit the program", 20, yInstructionLocation); yInstructionLocation +=10;
+    text("G or g: to Go with a new socket server", 20, yInstructionLocation); yInstructionLocation +=10;
+    text("S or s: will Stop the socket server", 20, yInstructionLocation); yInstructionLocation +=10;
+}
