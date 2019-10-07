@@ -24,6 +24,8 @@
 // 15 July. Remove commented out code for when window was monocrome.  Improve window text and color prompts for more conditions (server not active).
 // 15 July. Move keypress and mouse press to UserInput tab.  
 // 26 August. Add a loging file. 
+// 25 Sep. Add more responses for client commands to simulate an ST365. This works with ST Ultra.
+// 7 October. Move ST365 client command proccessing to a new file.  Make a G command to go with a new server. Add user instructions to draw window.
 
 String mySocket = "None";
 String myOldSocket = "None";
@@ -53,6 +55,7 @@ color myBackground = color(255, 0, 0);
 
 /* User Interface */
 int yInstructionLocation = 100;
+int yInstructionNextLine = 10;
 
 String s_serverStatus = "Not initilized";
 String s_clientStatus = "Not initilized";
@@ -74,7 +77,6 @@ void disconnectEvent(Client myClient) {
   appendTextToFile(myLogFileName, ("Client disconnect: " + myClient.ip()));
   s_messageClient = "";
   println("Client disconnect: " + myClient.ip());
-  //  println("Client event disconnect. Background set to: " + myBackground + " Server Says:  " +myClient.read());
 }
 
 // ServerEvent message is generated when a new client connects to an existing server.
@@ -102,7 +104,6 @@ void setup()
   f = createFont("Arial", 6, true);     // Create Font 
   textAlign(RIGHT);                    // Credit will be in lower right corner.
   text("Set up started", 400, 10);
-
   
   /*Set up server. This coorisponds to sl_Socket which opens a socket, 
    and sl_Bind which is where we set port, 
@@ -113,7 +114,7 @@ void setup()
   text("Server started", 400, 10);  
   if (myServer.active() == true) {
     myBackground = color(0, 0, 0);
-    s_serverStatus = "Server is active.";
+    s_serverStatus = "Start up server is active.";
     myServerRunning = true;
   }else {
     myServerRunning = false;
@@ -124,7 +125,6 @@ void draw() {
   yInstructionLocation = 100; //Reset location for next instruction line
   textAlign(RIGHT); 
 
-//  if (myServer.active() == true) {
   if (myServerRunning) {
     background (myBackground);
     mySocket = " IP: " + Server.ip() + ":" + str(MY_PORT);
@@ -134,28 +134,23 @@ void draw() {
       println(myTime + " Server socket changed from: " + myOldSocket + " to: " + mySocket );
       myOldSocket = mySocket;
     }
-  
     text(s_serverStatus + mySocket, 400, 10);
     //    text(s_serverStatus + " IP: " + Server.ip() + ":" + str(MY_PORT) ,400, 10);
     text("Client Connection: "+s_clientStatus, 400, 20);
     text("Client: " + s_messageClient, 400, 40);
-    text("Server:" + s_messageServer, 400, 50);
-    
+    text("Server:" + s_messageServer, 400, 50);    
     printUserInstructions();
-
+    
     thisClient = myServer.available();
     // If the client is not null, and says something, display what it said
     if (thisClient !=null) {
       text("Client transmitting", 400, 30);
       myClient = thisClient;  // Save off the client object for the key close event.
-      //      println("myClient is: " + myClient );
       String whatClientSaid = thisClient.readString();
       if (whatClientSaid != null) {
         println(thisClient.ip() + "\t" + whatClientSaid);
         s_messageServer = "";
         s_messageClient = whatClientSaid;
-
-        // Process client commands
         processClientCommands(whatClientSaid);
       }
     }//Client available

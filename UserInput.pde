@@ -1,4 +1,5 @@
 /* User Interface with keyboard*/
+
 void keyPressed() {
   //Proccess keys of UI.
   
@@ -59,7 +60,9 @@ void keyPressed() {
 
   if (((key =='g') && (myServerRunning== false)) || ((key =='G') && (myServerRunning== false)) ){
      println("Go to start new server.");
-     myServer = new Server(this, MY_PORT); // Starts a server     
+     myServer = new Server(this, MY_PORT); // Starts a server   
+     s_messageServer= "New server "; 
+     s_serverStatus = "New server running";
      myServerRunning = true;
      myBackground = color(0,0,0); //Set to black when server started
   }//S
@@ -99,10 +102,10 @@ void mousePressed() {
 void printUserInstructions(){
     /*User menu*/
     textAlign(LEFT); 
-    text("KEYBOARD COMMANDS:", 10, yInstructionLocation); yInstructionLocation +=10;
-    text("A or a: returns server Active status", 20, yInstructionLocation); yInstructionLocation +=10;
-    text("D or d:  commands Disconnect client socket", 20, yInstructionLocation); yInstructionLocation +=10;
-    text("E or e or X or x: will EXit the program", 20, yInstructionLocation); yInstructionLocation +=10;
-    text("G or g: to Go with a new socket server", 20, yInstructionLocation); yInstructionLocation +=10;
-    text("S or s: will Stop the socket server", 20, yInstructionLocation); yInstructionLocation +=10;
+    text("KEYBOARD COMMANDS:", 10, yInstructionLocation); yInstructionLocation += yInstructionNextLine;
+    text("A or a: returns server Active status", 20, yInstructionLocation); yInstructionLocation += yInstructionNextLine;
+    text("D or d:  commands Disconnect client socket", 20, yInstructionLocation); yInstructionLocation += yInstructionNextLine;
+    text("E or e or X or x: will EXit the program", 20, yInstructionLocation); yInstructionLocation += yInstructionNextLine;
+    text("G or g: to Go with a new socket server", 20, yInstructionLocation); yInstructionLocation += yInstructionNextLine;
+    text("S or s: will Stop the socket server", 20, yInstructionLocation); yInstructionLocation += yInstructionNextLine;
 }
