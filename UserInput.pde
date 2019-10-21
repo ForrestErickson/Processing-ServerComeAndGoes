@@ -102,7 +102,9 @@ void mousePressed() {
 void printUserInstructions(){
     /*User menu*/
     textAlign(LEFT); 
+    textFont(fBig);
     text("KEYBOARD COMMANDS:", 10, yInstructionLocation); yInstructionLocation += yInstructionNextLine;
+    textFont(f);  //Back to regular
     text("A or a: returns server Active status", 20, yInstructionLocation); yInstructionLocation += yInstructionNextLine;
     text("D or d:  commands Disconnect client socket", 20, yInstructionLocation); yInstructionLocation += yInstructionNextLine;
     text("E or e or X or x: will EXit the program", 20, yInstructionLocation); yInstructionLocation += yInstructionNextLine;

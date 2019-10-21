@@ -42,7 +42,8 @@ String MY_IP_WIFI = "Wi-Fi";
 int MY_PORT = 23; // Start on Telnet even though we are RAW socket.
 boolean myServerRunning;
 
-PFont f;                          // Declare PFont variable
+PFont f;                          // Declare regular body text PFont variable
+PFont fBig;                          // Declare heading PFont variable
 
 String input;
 int data[];
@@ -55,7 +56,7 @@ color myBackground = color(255, 0, 0);
 
 /* User Interface */
 int yInstructionLocation = 100;
-int yInstructionNextLine = 10;
+int yInstructionNextLine = 18;
 
 String s_serverStatus = "Not initilized";
 String s_clientStatus = "Not initilized";
@@ -101,7 +102,8 @@ void setup()
   myLogFileName = (startTime + "_" + myLogFileName);
   appendTextToFile(myLogFileName, ("Your log is born."));
 
-  f = createFont("Arial", 6, true);     // Create Font 
+  f = createFont("Arial", 12, true);     // Create Font 
+  fBig = createFont("Arial", 18, true);     // Create Font for heading 
   textAlign(RIGHT);                    // Credit will be in lower right corner.
   text("Set up started", 400, 10);
   
