@@ -1,4 +1,7 @@
-/** ServerComeAndGoes //<>//
+String PROG_NAME = "ServerComeAndGoes"; //<>//
+String VERSION = "V0.39 ";
+
+/** ServerComeAndGoes
  *
  * /author F. Lee Erickson.
  * /date 3 June 2019.
@@ -26,6 +29,7 @@
 // 26 August. Add a loging file. 
 // 25 Sep. Add more responses for client commands to simulate an ST365. This works with ST Ultra.
 // 7 October. Move ST365 client command proccessing to a new file.  Make a G command to go with a new server. Add user instructions to draw window.
+// 7 Dec 2024. Formate date and time stamp to two digits.
 
 String mySocket = "None";
 String myOldSocket = "None";
@@ -95,6 +99,7 @@ void serverEvent(Server myServer, Client myClient) {
 
 void setup() 
 {
+  surface.setTitle(PROG_NAME + " Ver:" + VERSION);
   frameRate(60);  
   background (myBackground);
   size(400, 400); 

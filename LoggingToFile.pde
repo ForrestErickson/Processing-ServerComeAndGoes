@@ -18,7 +18,7 @@ import java.io.FileWriter;
 String myLogFileName = "ServerComeAndGoes.log.txt";
 
 void appendTextToFile(String filename, String text) {
-  String myTime = (str(year()) + str(month()) +str(day()) +"_" + str(hour()) + str(minute()) + str(second()) );
+  String myTime = str(year())+ String.format("%02d", month())+ String.format("%02d", day())+ "_"+ String.format("%02d", hour())+ String.format("%02d", minute())+ String.format("%02d", second());
   text = myTime +" " + text;
   File f = new File(dataPath(filename));
   if(!f.exists()){
